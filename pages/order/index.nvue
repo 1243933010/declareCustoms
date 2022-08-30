@@ -1,0 +1,126 @@
+<template>
+	<view>
+		<view class="fixed">
+			<view class="page-top">
+				<uni-search-bar @confirm="search" :focus="true" v-model="reqData.keyWord" 
+					  cancelButton='none' >
+				</uni-search-bar>
+			</view>
+			<view class="" style="background: white;z-index: 10;">
+				<scroll-view class="scroll-view_H" scroll-x="true" @scroll="scroll" scroll-left="0">
+					<view id="demo1" 
+					class="scroll-view-item_H uni-bg-red "
+					:class="activeIndex===index?'active':''"
+					v-for="(item,index) in tabList">
+					<text @click="chooseActive(item,index)">{{item.title}}</text>
+					</view>
+				</scroll-view>
+			</view>
+		</view>
+		<view class="entry"></view>
+		
+		<view class="order-list">
+		   <list ref='childListRef' :getObj="getObj" />
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+import {ref,onMounted} from 'vue'
+import list from '@/pages/order/list'
+import {onReachBottom} from '@dcloudio/uni-app'
+const childListRef = ref(null)
+let getObj = ref({})
+let activeIndex = ref(0)
+let tabList:any = ref([
+	{title:'全部',type:''},
+	{title:'待发货',type:'1'},
+	{title:'待签收',type:'2'},
+	{title:'已完成',type:'3'},
+	{title:'已取消',type:'8'}])
+	let reqData:any = ref({
+		limit:15,
+		page:1,
+		userId:uni.getStorageSync('userId'),
+		keyWord:'',
+		status:tabList.value[activeIndex.value].type
+	})
+	onReachBottom(()=>{
+		console.log('触发滑动到底')
+		reqData.value.page++;
+		childListRef.value?childListRef.value.getList(reqData.value):''; //兼容h5端
+	})
+	
+	
+	let chooseActive = (item,index)=>{
+		reqData.value.page=1;
+		childListRef.value?childListRef.value.getList(reqData.value):''; //兼容h5端
+		activeIndex.value = index;
+	}
+	let search = ()=>{
+		reqData.value.page=1;
+		childListRef.value?childListRef.value.getList(reqData.value):''; //兼容h5端
+	}
+	onMounted(()=>{
+		childListRef.value?childListRef.value.getList(reqData.value):''; //兼容h5端
+	})
+</script>
+
+
+<style lang="scss">
+	.page-top{
+		height: 90rpx;
+		/* #ifdef MP-WEIXIN */
+		margin-bottom: 10rpx;
+		/* #endif */
+	}
+	.fixed,.entry{
+		width:100%;
+		height: 150rpx;
+	}
+	.fixed{
+		position: fixed;
+		top: 0;
+		z-index: 100;
+		background: white;
+		/* #ifdef H5 */
+		padding-top: 44px;
+		/* #endif */
+	}
+	.entry{
+		// background: red;
+	}
+	.active{
+		border-bottom: 2px solid #9F8F8F;
+	}
+	.scroll-Y {
+		height: 100rpx;
+	}
+
+	.scroll-view_H {
+		white-space: nowrap;
+		width: 100%;
+	}
+
+	.scroll-view-item {
+		height: 100rpx;
+		line-height: 100rpx;
+		text-align: center;
+		font-size: 36rpx;
+	}
+
+	.scroll-view-item_H {
+		display: inline-block;
+		width: 17%;
+		height: 90rpx;
+		margin: 0 20rpx;
+		line-height: 100rpx;
+		text-align: center;
+		font-size: 26rpx;
+		color: #9F8F8F;
+	}
+	.order-list{
+		// border-top: 5px solid #F5F5F5;
+		// margin-top: 20rpx;
+	}
+</style>

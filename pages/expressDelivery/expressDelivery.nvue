@@ -1,0 +1,303 @@
+<template>
+	<view>
+		<view class="detail">
+			<view class="item">
+				<view class="left">
+					<text>小票号:{{formData.receiptsNo}}</text>
+				</view>
+			</view>
+			<view class="item">
+				<view class="left">
+					<text>商铺编号:{{formData.shopNo}}</text>
+				</view>
+			</view>
+			<view class="item">
+				<view class="left">
+					<text>商品重量:{{formData.goodsWeight}}</text>
+				</view>
+			</view>
+		</view>
+
+		<view class="" style="background: white;margin-bottom: 20rpx;">
+			<uni-forms ref="form" :model="formData" label-width="120px">
+				<uni-forms-item label="发货人名称:" name="mailName">
+					<uni-easyinput type="text" v-model="formData.mailName" placeholder="请输入发货人名称" />
+					<text style="color: red;">*</text>
+				</uni-forms-item>
+				<uni-forms-item label="发货人电话:" name="mailTelephone">
+					<uni-easyinput type="text" v-model="formData.mailTelephone" placeholder="请输入发货人电话" />
+					<text style="color: red;">*</text>
+				</uni-forms-item>
+				<uni-forms-item label="收货人名称:" name="userName">
+					<uni-easyinput type="text" v-model="formData.userName" placeholder="请输入收货人名称" />
+					<uni-icons @click="goAddress" type="person-filled" size="30"></uni-icons>
+					<text style="color: red;">*</text>
+				</uni-forms-item>
+				<uni-forms-item label="收货人电话:" name="telephone">
+					<uni-easyinput type="text" v-model="formData.telephone" placeholder="请输入收货人电话" />
+					<text style="color: red;">*</text>
+				</uni-forms-item>
+				<uni-forms-item label="收货人所在地区:" name="name">
+					<picker mode="region" @change="bindRegionChange" value="{{region}}" custom-item="{{customItem}}">
+						<view class="picker">
+							{{region[0]}}，{{region[1]}}，{{region[2]}}
+						</view>
+					</picker>
+					<text style="color: red;">*</text>
+				</uni-forms-item>
+				<uni-forms-item label="收货人详细地址:" name="adrdetail">
+					<textarea class="textarea" v-model="formData.adrdetail" placeholder="详细地址,例如xx街xx号"></textarea>
+					<text style="color: red;">*</text>
+				</uni-forms-item>
+				<uni-forms-item label="快递公司:" name="name">
+					<picker @change="bindPickerChange" range-key='label' :value="index" :range="arrayList">
+						<view class="uni-input picker-text">{{arrayList[index].label}}</view>
+					</picker>
+					<text style="color: red;">*</text>
+				</uni-forms-item>
+				<uni-forms-item label="备注:" name="name">
+					<textarea style="width: 480rpx;height: 200rpx; border: 1px solid rgb(229, 229, 229);"
+						class="textarea" v-model="formData.name" placeholder="详细地址,例如xx街xx号"></textarea>
+					<text style="color: red;">*</text>
+				</uni-forms-item>
+			</uni-forms>
+		</view>
+
+		<view class="pay">
+			<view class="pay-left">
+				<text class="money">￥0.00</text>
+				<text>|</text>
+				<text>寄付现结</text>
+			</view>
+			<view class="pay-btn">
+				<button size="mini" type="warn" @click="payBtn">下单</button>
+			</view>
+		</view>
+
+	</view>
+</template>
+
+<script setup lang="ts">
+	import {
+		ref
+	} from 'vue'
+	import {
+		onLoad
+	} from '@dcloudio/uni-app'
+	import {
+		valiDateFnc
+	} from '@/utils/validateFnc'
+	import {
+		$request
+	} from '@/utils/request.js'
+	let formData:any = ref({
+		adrdetail: '', //详细地址
+		province: '', //地区：省
+		city: '', //	地区：市
+		county: '', //地区：区
+		// createDate:'2022-8-27',//创建时间
+		expressCompany: '', //快递公司
+		// expressNo:'',//快递单号
+		goodsWeight: '', //商品重量
+		// id:0,//	id
+		// logisticsInfo:'',//	物流轨迹信息
+		mailName: '', //	寄件人名称
+		mailTelephone: '', //	寄件人电话
+		// orderNo:'',//	订单号
+		receiptsNo: '', //	小票号
+		// returnInfo:'',//	第三方接口返回信息
+		shopNo: '', //	商铺编号
+		// status:'',//	状态
+		telephone: '', //	手机号码
+		// updateDate:'',//	修改时间
+		userId: '', //openid
+		userName: '', //	收货人
+	})
+
+	let index:any = ref(0);
+	const region:any = ref(['--省', '--市', '--区'])
+	const customItem = ref('全部')
+	const arrayList:any = ref([{
+		value: 'LC001',
+		label: '顺丰快递'
+	}, {
+		value: 'LC002',
+		label: '邮政快递'
+	}])
+	onLoad(async(option) => {
+		console.log(option)
+		formData.value.receiptsNo = '123456';
+		formData.value.shopNo = '123456';
+		formData.value.goodsWeight = '12';
+		formData.value.userId = '123456789';
+		formData.value.expressCompany = arrayList.value[index.value].value;
+	    
+		 getOpenId();
+	     findReceiptsNo()
+	})
+	const getOpenId = ()=>{
+		// #ifdef MP-WEIXIN
+		  wx.login({
+			  success: async(res) => {
+			  	console.log(res)
+				let data = await $request('wechatLogin',  res.code ,1)
+				console.log(data)
+				if(data.data.code===0){
+					formData.value.userId = data.data.data;
+					uni.setStorageSync('userId',data.data.data)
+					return
+				}
+				uni.showToast({
+					icon:'none',
+					title:data.data.msg
+				})
+			  }
+		  })
+		// #endif
+		// #ifdef H5
+		uni.setStorageSync('userId','123456789')
+		// #endif
+	}
+	const findReceiptsNo = async()=>{
+		let res = await $request('infoByReceiptsNo',formData.value.receiptsNo,1)
+		console.log(res)
+		if(res.data.code===0&&res.data.data.id){
+			uni.showToast({
+				icon:'none',title:'查询到当前小票的快递详情,准备跳转',
+				success: () => {
+					setTimeout(()=>{
+						uni.redirectTo({
+							url:`/pages/order/detail?id=${res.data.data.id}`
+						})
+					},1000)
+				}
+			})
+		}
+	}
+	const bindRegionChange = (e) => {
+		console.log('picker发送选择改变，携带值为', e)
+		region.value = e.detail.value;
+	}
+	const bindPickerChange = (e) => {
+		console.log('picker发送选择改变，携带值为', e.detail.value)
+		index.value = e.detail.value
+		formData.value.expressCompany = arrayList.value[e.detail.value].value;
+	}
+	const payBtn = async () => {
+		let status = valiDateFnc(formData.value)
+		if (!status) return false
+		let res = await $request('addLogisticOrder', formData.value);
+		console.log(res)
+		if(res.data.code===0){
+			return
+		}
+		uni.showToast({
+			icon:'none',
+			title:res.data.msg
+		})
+	}
+	const goAddress = () => {
+		// #ifdef MP-WEIXIN
+		wx.chooseAddress({
+			success: (res) => {
+				console.log(res)
+				formData.value.telephone = res.telNumber;
+				formData.value.userName = res.userName;
+				formData.value.telephone = res.telNumber;
+				formData.value.province = res.provinceName;
+				formData.value.city = res.cityName;
+				formData.value.county = res.countyName;
+				region.value = [res.provinceName, res.cityName, res.countyName]
+				formData.value.adrdetail = res.detailInfo;
+			},
+			fail: (err) => {
+				console.log(err)
+			}
+		})
+		return
+		// #endif
+	}
+</script>
+
+<style lang="scss" scoped>
+	page {
+		background-color: #F5F5F5;
+	}
+
+	textarea {
+		background: white;
+		width: 480rpx;
+		height: 200rpx;
+		border: 1px solid rgb(229, 229, 229);
+	}
+
+	picker {
+		width: 400rpx;
+		border: 1px solid rgb(229, 229, 229);
+		background: white;
+		border-radius: 10rpx;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		padding-left: 50rpx;
+
+		.picker-text {
+			width: 400rpx;
+			height: 80rpx;
+			line-height: 80rpx;
+		}
+
+	}
+
+	.pay {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex-direction: row;
+		background: white;
+		padding: 30rpx 0;
+		margin-bottom: 40rpx;
+
+		.pay-left {
+			display: flex;
+			flex-direction: row;
+			align-items: center;
+
+			text {
+				margin: 0 10rpx;
+				font-size: 29rpx;
+			}
+
+			.money {
+				font-weight: 600;
+				color: red;
+			}
+		}
+
+		.pay-btn {
+			button {
+				padding: 0 50rpx;
+			}
+		}
+	}
+
+	.detail,
+	.user-msg {
+		background: white;
+		display: flex;
+		padding: 30rpx 20rpx;
+		margin-bottom: 20rpx;
+
+		.item {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 30rpx;
+
+			.left {
+				font-size: 28rpx;
+			}
+		}
+	}
+</style>

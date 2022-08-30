@@ -1,0 +1,37 @@
+{
+    "pages": [
+        "pages/index/index",
+        "pages/expressDelivery/expressDelivery",
+        "pages/order/index",
+        "pages/order/detail",
+        "pages/order/logisticsDetail"
+    ],
+    "subPackages": [
+        {
+            "root": "pagesA",
+            "pages": [
+                "list/list"
+            ]
+        }
+    ],
+    "window": {
+        "navigationBarTextStyle": "white",
+        "navigationBarTitleText": "",
+        "navigationBarBackgroundColor": "#4095E5",
+        "backgroundColor": "#F8F8F8"
+    },
+    "preloadRule": {
+        "pagesA/list/list": {
+            "network": "all",
+            "packages": [
+                "__APP__"
+            ]
+        }
+    },
+    "permission": {},
+    "requiredPrivateInfos": [
+        "chooseAddress"
+    ],
+    "usingComponents": {},
+    "sitemapLocation": "sitemap.json"
+}

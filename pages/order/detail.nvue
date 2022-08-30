@@ -1,0 +1,160 @@
+<template>
+	<view>
+		<view class="detail" >
+			<view class="item" v-for="(item,index) in shopMsg">
+				<view class="left">
+					<text>{{item.title}}:{{item.indexName}}</text>
+				</view>
+				<view class="right" v-if="item.rightBool">
+					<button class="mini-btn" :type="item.rightColor" @click="clickFnc(item)" size="mini">{{item.rightText}}</button>
+				</view>
+			</view>
+		</view>
+		
+		<view class="user-msg">
+			<view class="item" v-for="(item,index) in userMsg">
+				<view class="left">
+					<text>{{item.title}}:{{item.indexName}}</text>
+				</view>
+			</view>
+		</view>
+		<view class="fnc-btn">
+			<button class="mini-btn" type="primary" size="mini" @click="seeLogistics">查看物流</button>
+			<button class="mini-btn" type="primary" size="mini">返回</button>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	import {ref,reactive} from 'vue'
+	import {onLoad,} from '@dcloudio/uni-app'
+	import {$request} from '@/utils/request.js'
+	import {statusObj,arrayList} from './utilObj'
+	let shopMsg:any = ref([
+		{title:'小票号',indexName:'test',rightBool:false,rightClick:'',rightText:''},
+		{title:'商铺编号',indexName:'test',rightBool:false,rightClick:'',rightText:''},
+		{title:'货物重量',indexName:'test',rightBool:false,rightClick:'',rightText:''},
+		{title:'下单日期',indexName:'test',rightBool:false,rightClick:'',rightText:''},
+		{title:'物流公司',indexName:'test',rightBool:false,rightClick:'',rightText:''},
+		{title:'物流单号',indexName:'test',rightBool:true,rightClick:'copy',rightText:'复制',rightColor:'primary'},
+		{title:'订单状态',indexName:'test',rightBool:true,rightClick:'cancel',rightText:'取消',rightColor:'warn'}
+	])
+	
+	let userMsg:any = ref([
+		{title:'发货人',indexName:'test',rightBool:false,rightClick:'',rightText:''},
+		{title:'收货人',indexName:'test',rightBool:false,rightClick:'',rightText:''},
+		{title:'地址',indexName:'test',rightBool:false,rightClick:'',rightText:''},
+	])
+	let shopMsgCopy:any = ref({})
+	let userMsgCopy:any = ref({})
+	let detailObj:any = ref({});
+	let seeLogistics = ()=>{
+		let reqObj= {
+			expressCompany:detailObj.value.expressCompany,
+			expressNo:detailObj.value.expressNo,
+			status:detailObj.value.status,
+		}
+		// console.log(detailObj.value)
+		uni.navigateTo({
+			url:`/pages/order/logisticsDetail?reqObj=${JSON.stringify((reqObj))}`
+		})
+	}
+	
+	const clickFnc = (item:{rightClick:string})=>{
+		console.log(item)
+		let obj = {
+			copy:copyFnc,
+			cancel:cancelFnc
+		}
+		obj[item.rightClick](item)
+	}
+	let copyFnc = (item:{indexName:string})=>{
+		console.log(item)
+		uni.setClipboardData({
+			data:item.indexName,
+			success: () => {
+				uni.showToast({
+					icon:'none',title:'复制成功'
+				})
+			}
+		})
+	}
+	let cancelFnc = (item:object)=>{
+		
+	}
+	onLoad(async(options:{id:string})=>{
+		let res:any = await $request('mailInfo',options.id,1)
+		if(res.data.code===0){
+			detailObj.value = res.data.data;
+			shopMsgCopy.value = {
+				'1':res.data.data.receiptsNo,
+				'2':res.data.data.shopNo,
+				'3':res.data.data.goodsWeight,
+				'4':res.data.data.createDate,
+				'5':res.data.data.expressCompany,
+				'6':res.data.data.expressNo,
+				'7':res.data.data.status
+			};
+			userMsgCopy.value = {
+				'8':res.data.data.mailName,
+				'9':res.data.data.userName,
+				'10':`${res.data.data.province}${res.data.data.city}${res.data.data.city}${res.data.data.county}${res.data.data.adrdetail}`
+			}
+			for(let i =0;i< shopMsg.value.length;i++){
+				shopMsg.value[i].indexName = Object.values(shopMsgCopy.value)[i];
+				
+				if(shopMsg.value[i].title==='物流公司'){
+					shopMsg.value[i].indexName = arrayList[shopMsg.value[i].indexName]
+				}
+				
+				if(shopMsg.value[i].title==='订单状态'){
+					Object.values(shopMsgCopy.value)[i]!==1?shopMsg.value[i].rightBool=false:''
+					shopMsg.value[i].indexName = statusObj[shopMsg.value[i].indexName]?statusObj[shopMsg.value[i].indexName]:'异常'
+				}
+				if(shopMsg.value[i].title==='物流单号'){
+					Object.values(shopMsgCopy.value)[i]? shopMsg.value[i].rightBool=true:shopMsg.value[i].rightBool=false;
+				}
+			}
+			for(let i =0;i< userMsg.value.length;i++){
+				userMsg.value[i].indexName = Object.values(userMsgCopy.value)[i]
+			}
+			return
+		}
+		uni.showToast({
+			icon:'none',
+			title:res.data.msg
+		})
+	})
+</script>
+
+<style lang="scss" scoped>
+	page{
+		background-color: #F5F5F5;
+	}
+	.detail,.user-msg{
+		background: white;
+		display: flex;
+		padding: 30rpx 20rpx;
+		margin-bottom: 20rpx;
+		.item{
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: center;
+			margin-bottom: 30rpx;
+			.left{
+				font-size: 28rpx;
+			}
+		}
+	}
+	.fnc-btn{
+		width: 100%;
+		display: flex;
+		flex-direction: row;
+		justify-content:center;
+		align-items: center;
+		button{
+			margin: 0 30rpx;
+		}
+	}
+</style>

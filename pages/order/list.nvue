@@ -1,0 +1,109 @@
+<template>
+	<view>
+		<view class="box">
+			<view class="item" v-for="(item,index) in list" @click="clickTap(item,index)">
+				<view class="item-top">
+					<view class="item-top-order">
+						{{arrayList[item.expressCompany]}}:{{item.userId}}
+					</view>
+					<view class="item-top-type">
+						{{statusObj[item.status.toString()]}}
+					</view>
+				</view>
+				<view class="item-address">
+					<text>{{item.province}}{{item.city}}{{item.county}}{{item.adrdetail}}</text>
+				</view>
+				<view class="item-bottom">
+					<view class="msg">
+						<text>{{item.userName}}</text>
+						<text>{{item.telephone}}</text>
+					</view>
+					<view class="time">
+						<text>{{item.createDate}}</text>
+					</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script setup lang="ts">
+	import { ref,defineExpose } from 'vue';
+	import {onLoad,} from '@dcloudio/uni-app'
+	import {$request} from '@/utils/request'
+	import {propList} from '@/interface/orderListInterface'
+	import {statusObj,arrayList} from './utilObj'
+	let list:any = ref([])
+
+	let getList = async(data:propList)=>{
+		if(data.page===1){
+			list.value = [];
+		}
+		let res = await $request('getMailOrderList',data,1)
+		console.log(res)
+		if(res.data.code===0){
+			list.value.push(...res.data.data.list);
+			console.log(list.value)
+			return
+		}
+		uni.showToast({
+			icon:'none',title:res.data.msg
+		})
+		
+	}
+	let clickTap = (item,index)=>{
+		console.log(item,index)
+		uni.navigateTo({
+			url:`/pages/order/detail?id=${item.id}`
+		})
+	}
+	defineExpose({getList})
+</script>
+
+<style lang="scss" scoped>
+	.box{
+		padding: 20rpx 0;
+		.item{
+			width: 100%;
+			border-top: 5px solid #F5F5F5;
+			margin-top: 20rpx;
+			padding: 20rpx 15rpx;
+			.item-top{
+				width: 100%;
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 25rpx;
+				.item-top-order{
+					font-size: 28rpx;
+				}
+				.item-top-type{
+					color: #6995E5;
+					font-size: 28rpx;
+				}
+			}
+			.item-address{
+				font-size: 27rpx;
+				color: #646464;
+				margin-bottom: 25rpx;
+			}
+			.item-bottom{
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				flex-direction: row;
+				.msg{
+					display: flex;
+					flex-direction: row;
+					align-items: center;
+					font-weight: 400;
+				}
+				.time{
+					font-size: 27rpx;
+					color: #646464;
+				}
+			}
+		}
+	}
+</style>
