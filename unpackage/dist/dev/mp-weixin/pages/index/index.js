@@ -1,12 +1,8 @@
 "use strict";
 var common_vendor = require("../../common/vendor.js");
-var utils_request = require("../../utils/request.js");
-var utils_log = require("../../utils/log.js");
-require("../../utils/requestObj.js");
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "index",
   setup(__props) {
-    const log = new utils_log.Logs();
     let fncList = common_vendor.ref([
       { title: "\u5FEB\u9012\u8BA2\u5355", click: "/pages/order/index" },
       { title: "\u5730\u5740\u7BA1\u7406", click: "" },
@@ -30,10 +26,6 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       });
     };
     common_vendor.onLoad(async (options) => {
-      console.log(options);
-      let res = await utils_request.$request("testParams", options);
-      log.info(res);
-      console.log(res);
     });
     return (_ctx, _cache) => {
       return {
@@ -47,5 +39,5 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     };
   }
 });
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-8ddf7c9c"], ["__file", "E:/\u6211\u7684\u6587\u6863/HBuilderProjects/declareCustoms/pages/index/index.nvue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-8ddf7c9c"], ["__file", "E:/\u6211\u7684\u6587\u6863/\u684C\u9762/gitFiles/declareCustoms/pages/index/index.nvue"]]);
 wx.createPage(MiniProgramPage);

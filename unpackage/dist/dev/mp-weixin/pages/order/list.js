@@ -51,5 +51,5 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     };
   }
 });
-var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-439954b4"], ["__file", "E:/\u6211\u7684\u6587\u6863/HBuilderProjects/declareCustoms/pages/order/list.nvue"]]);
+var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-439954b4"], ["__file", "E:/\u6211\u7684\u6587\u6863/\u684C\u9762/gitFiles/declareCustoms/pages/order/list.nvue"]]);
 wx.createComponent(Component);

@@ -2,6 +2,7 @@
 var common_vendor = require("../../common/vendor.js");
 var utils_validateFnc = require("../../utils/validateFnc.js");
 var utils_request = require("../../utils/request.js");
+var utils_log = require("../../utils/log.js");
 require("../../utils/requestObj.js");
 if (!Array) {
   const _easycom_uni_easyinput2 = common_vendor.resolveComponent("uni-easyinput");
@@ -20,6 +21,7 @@ if (!Math) {
 const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
   __name: "expressDelivery",
   setup(__props) {
+    const log = new utils_log.Logs();
     let formData = common_vendor.ref({
       adrdetail: "",
       province: "",
@@ -54,6 +56,10 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
       formData.value.expressCompany = arrayList.value[index.value].value;
       getOpenId();
       findReceiptsNo();
+      console.log(option);
+      let res = await utils_request.$request("testParams", option);
+      log.info(res);
+      console.log(res);
     });
     const getOpenId = () => {
       wx.login({
@@ -220,5 +226,5 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     };
   }
 });
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-180627e4"], ["__file", "E:/\u6211\u7684\u6587\u6863/HBuilderProjects/declareCustoms/pages/expressDelivery/expressDelivery.nvue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__scopeId", "data-v-180627e4"], ["__file", "E:/\u6211\u7684\u6587\u6863/\u684C\u9762/gitFiles/declareCustoms/pages/expressDelivery/expressDelivery.nvue"]]);
 wx.createPage(MiniProgramPage);

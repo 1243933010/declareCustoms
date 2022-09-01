@@ -84,5 +84,5 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     };
   }
 });
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "E:/\u6211\u7684\u6587\u6863/HBuilderProjects/declareCustoms/pages/order/logisticsDetail.nvue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "E:/\u6211\u7684\u6587\u6863/\u684C\u9762/gitFiles/declareCustoms/pages/order/logisticsDetail.nvue"]]);
 wx.createPage(MiniProgramPage);

@@ -14,7 +14,7 @@
             "outputPath": ""
         }
     },
-    "compileType": "game",
+    "compileType": "miniprogram",
     "libVersion": "2.25.4",
     "appid": "wx340f14c76e4a04e8",
     "projectname": "declareCustoms",

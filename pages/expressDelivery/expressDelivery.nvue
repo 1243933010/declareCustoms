@@ -90,6 +90,8 @@
 	import {
 		$request
 	} from '@/utils/request.js'
+	import {Logs} from '@/utils/log.js';
+	const log = new Logs();
 	let formData:any = ref({
 		adrdetail: '', //详细地址
 		province: '', //地区：省
@@ -134,6 +136,10 @@
 	    
 		 getOpenId();
 	     findReceiptsNo()
+		 console.log(option)
+		 let res = await $request('testParams',option)
+		 log.info(res);
+		 console.log(res)
 	})
 	const getOpenId = ()=>{
 		// #ifdef MP-WEIXIN

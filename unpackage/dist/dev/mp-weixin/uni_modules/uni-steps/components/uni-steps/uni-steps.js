@@ -62,7 +62,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
         a: index <= $props.active && index !== 0 ? $props.activeColor : index === 0 ? "transparent" : $props.deactiveColor,
         b: index === $props.active
       }, index === $props.active ? {
-        c: "2cc7be11-0-" + i0,
+        c: "28781dea-0-" + i0,
         d: common_vendor.p({
           color: $props.activeColor,
           type: $props.activeIcon,
@@ -86,5 +86,5 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     n: common_vendor.n($props.direction === "column" ? "uni-steps__column" : "uni-steps__row")
   };
 }
-var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/\u6211\u7684\u6587\u6863/HBuilderProjects/declareCustoms/uni_modules/uni-steps/components/uni-steps/uni-steps.vue"]]);
+var Component = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["render", _sfc_render], ["__file", "E:/\u6211\u7684\u6587\u6863/\u684C\u9762/gitFiles/declareCustoms/uni_modules/uni-steps/components/uni-steps/uni-steps.vue"]]);
 wx.createComponent(Component);

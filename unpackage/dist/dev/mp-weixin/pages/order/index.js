@@ -63,7 +63,7 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
           };
         }),
         e: common_vendor.o((...args) => _ctx.scroll && _ctx.scroll(...args)),
-        f: common_vendor.sr(childListRef, "1465e2de-1", {
+        f: common_vendor.sr(childListRef, "6d9c34aa-1", {
           "k": "childListRef"
         }),
         g: common_vendor.p({
@@ -73,5 +73,5 @@ const _sfc_main = /* @__PURE__ */ common_vendor.defineComponent({
     };
   }
 });
-var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "E:/\u6211\u7684\u6587\u6863/HBuilderProjects/declareCustoms/pages/order/index.nvue"]]);
+var MiniProgramPage = /* @__PURE__ */ common_vendor._export_sfc(_sfc_main, [["__file", "E:/\u6211\u7684\u6587\u6863/\u684C\u9762/gitFiles/declareCustoms/pages/order/index.nvue"]]);
 wx.createPage(MiniProgramPage);

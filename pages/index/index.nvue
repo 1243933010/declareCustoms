@@ -13,8 +13,8 @@
 	import {ref} from 'vue'
 	import {onLoad} from '@dcloudio/uni-app'
 	import {$request} from '@/utils/request.js'
-	import {Logs} from '@/utils/log.js';
-	const log = new Logs();
+	
+	
 	// log.info('hello test hahaha') // 日志会和当前打开的页面关联，建议在页面的onHide、onShow等生命周期里面打
 	// log.warn('warn');//打印警告
 	// log.error('error'); //打印错误
@@ -43,10 +43,7 @@
 	})
 	}
 	onLoad(async(options)=>{
-		console.log(options)
-		let res = await $request('testParams',options)
-		log.info(res);
-		console.log(res)
+		
 	})
 </script>
 
